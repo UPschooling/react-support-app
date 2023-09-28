@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: lint filenames
+        run: pnpm ls-lint
+
       - name: eslint
         run: pnpm run lint
 

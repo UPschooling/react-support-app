@@ -1,5 +1,7 @@
 // lint-staged.config.js
 module.exports = {
+  "*": (filenames) => `pnpm ls-lint ${filenames.join(" ")}`,
+
   "**/*.(ts|tsx)": () => "pnpm tsc --noEmit",
 
   "**/*.(ts|tsx|js)": (filenames) => [
