@@ -3,7 +3,6 @@
   "description": "This is a boilerplate build with Vite, React 18, TypeScript, Vitest, Testing Library, TailwindCSS 3, Eslint and Prettier.",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "author": {
     "name": "João Paulo Moraes",
     "email": "joaopaulomoraes@outlook.com",
@@ -27,6 +26,8 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.7.2",
+    "@commitlint/config-conventional": "^17.7.0",
     "@testing-library/jest-dom": "^6.1.3",
     "@testing-library/react": "^14.0.0",
     "@types/node": "^20.6.4",
