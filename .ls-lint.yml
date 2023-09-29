@@ -1,9 +1,10 @@
 ls:
+  .dir: regex:^[a-z0-9]+([\.\-\/](\_\_)?[a-z0-9]*(\_\_)?)*
   .js: kebab-case | pointcase
-  .ts: kebab-case | pointcase
-  .tsx: kebab-case | pointcase
-  .dir: regex:^[a-z0-9]+([.-/][a-z0-9]*)*$ | snakecase | kebab-case
+  .ts: PascalCase | camelCase
+  .tsx: PascalCase | camelCase
 ignore:
-  - lint-staged.config.js
   - node_modules
   - .*
+  - "*.config.*"
+  - "**/__tests__/**"
