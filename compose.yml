@@ -1,39 +1,37 @@
 services:
-  synapse.local:
-    image: matrixdotorg/synapse:latest
-    ports:
-      - "8008:8008"
-    volumes:
-      - ./synapse-data:/data
-    depends_on:
-      dex.local:
-        condition: service_healthy
-
-  dex.local:
-    image: dexidp/dex:latest
-    ports:
-      - "5556:5556"
-      - "5557:5557"
-      - "5558:5558"
-    volumes:
-      - ./dex.config.yml:/etc/dex/config.docker.yaml
-      - ./dex:/var/sqlite
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "-O/dev/null",
-          "-q",
-          "http://dex.local:5556/dex/.well-known/openid-configuration",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
-  element-web:
+  element:
     image: vectorim/element-web:latest
     ports:
       - "8080:80"
     volumes:
-      - ./element-config.json:/app/config.json
+      - ./element.config.json:/app/config.json
+
+  nextcloud.local:
+    build: ./nextcloud
+    ports:
+      - "80:80"
+    environment:
+      - NEXTCLOUD_ADMIN_USER=admin
+      - NEXTCLOUD_ADMIN_PASSWORD=admin
+      - SQLITE_DATABASE=nextcloud_db
+      - OVERWRITEPROTOCOL=http
+      - OVERWRITEHOST=nextcloud.local
+    volumes:
+      - ./nextcloud/postInstallation.sh:/docker-entrypoint-hooks.d/post-installation/postInstallation.sh
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  synapse:
+    image: matrixdotorg/synapse:latest
+    environment:
+      - SYNAPSE_CONFIG_PATH=/data/synapse.server.config.yaml
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./synapse:/data
+    depends_on:
+      nextcloud.local:
+        condition: service_healthy

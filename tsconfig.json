@@ -18,14 +18,9 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": [
-      "vite/client",
-      "vitest/globals",
-      "@testing-library/jest-dom",
-      "@types/matrix-js-sdk"
-    ],
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "strictNullChecks": false
   },
   "include": ["src"],
-  "exclude": ["./node_modules/*"]
+  "exclude": ["./node_modules/**"]
 }

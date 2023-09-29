@@ -9,15 +9,13 @@
 # For more information on how to configure Synapse, including a complete accounting of
 # each option, go to docs/usage/configuration/config_documentation.md or
 # https://matrix-org.github.io/synapse/latest/usage/configuration/config_documentation.html
-server_name: "synapse.local"
+server_name: "localhost:8008"
 pid_file: /data/homeserver.pid
-no_tls: true
-public_baseurl: http://synapse.local:8008/
+public_baseurl: http://localhost:8008/
 listeners:
   - port: 8008
     tls: false
     type: http
-    x_forwarded: true
     resources:
       - names: [client, federation]
         compress: false
@@ -27,27 +25,30 @@ database:
   args:
     database: /data/homeserver.db
 
-log_config: "/data/matrix.local.log.config"
+log_config: "/data/synapse.log.config.yaml"
 media_store_path: /data/media_store
 registration_shared_secret: "Bs01N+I2aCi0rG7ok_2MMz,k*#H0TyepJLihzAoqZ4+mw9biHd"
 report_stats: true
 macaroon_secret_key: "jwWma=bjU+GzEt5E#z;eDO*&.38Rz@HLyVMalC,xlV^~TOOm2D"
 form_secret: "M7V:&hQ^vCwmAgsDD5rMCYU*g&7enRwruizuq0PAzABb:w-S+G"
-signing_key_path: "/data/matrix.local.signing.key"
-
+signing_key_path: "/data/synapse.signing.key"
+suppress_key_server_warning: true
 trusted_key_servers:
   - server_name: "matrix.org"
 
+password_config:
+  localdb_enabled: false
+
 oidc_providers:
-  - idp_id: dex
-    idp_name: "My Dex server"
+  - idp_id: 01HBH8G2N6ZS3AF3C95ZQT4M2T
+    idp_name: "http://localhost:5173"
     skip_verification: true
-    issuer: "http://dex.local:5556/dex"
-    client_id: "synapse"
-    client_secret: "ZXhhbXBsZS1hcHAtc2VjcmV0"
-    scopes: ["openid", "profile"]
+    issuer: "http://nextcloud.local"
+    client_id: "VgSUqiTshGQ8oWszLaTVfBo0DDfaGUC6DDhPHIWum5nQlFlEMiXnoKVBLDLeCVKp"
+    client_secret: "N0ZlODQK0r5KgpQ77cVSqXfHbC6YGVzY1ig8H7fQ4qxiljEkQOIUbzRN1Fz9Ceyp"
+    client_auth_method: "client_secret_post"
+    scopes: ["openid", "email", "profile"]
     user_mapping_provider:
       config:
         localpart_template: "{{ user.name }}"
-        display_name_template: "{{ user.name|capitalize }}"
-# vim:ft=yaml
+        display_name_template: "{{ user.name }}"

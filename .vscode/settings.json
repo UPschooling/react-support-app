@@ -1,6 +1,13 @@
 {
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "files.associations": {
     "*.css": "tailwindcss"
+  },
+  "files.exclude": {
+    "node_modules/": true,
+    "pnpm-lock.yaml": true,
+    "LICENSE": true
   }
 }
