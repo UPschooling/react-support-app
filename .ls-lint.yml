@@ -8,3 +8,4 @@ ignore:
   - .*
   - "*.config.*"
   - "**/__tests__/**"
+  - synapse-data/**

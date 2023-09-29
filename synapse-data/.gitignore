@@ -1,0 +1,5 @@
+*
+!.gitignore
+!homeserver.yaml
+!matrix.local.log.config
+!matrix.local.signing.key

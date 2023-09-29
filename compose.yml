@@ -1,0 +1,39 @@
+services:
+  synapse.local:
+    image: matrixdotorg/synapse:latest
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./synapse-data:/data
+    depends_on:
+      dex.local:
+        condition: service_healthy
+
+  dex.local:
+    image: dexidp/dex:latest
+    ports:
+      - "5556:5556"
+      - "5557:5557"
+      - "5558:5558"
+    volumes:
+      - ./dex.config.yml:/etc/dex/config.docker.yaml
+      - ./dex:/var/sqlite
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-O/dev/null",
+          "-q",
+          "http://dex.local:5556/dex/.well-known/openid-configuration",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  element-web:
+    image: vectorim/element-web:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./element-config.json:/app/config.json
