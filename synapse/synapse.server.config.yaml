@@ -13,6 +13,9 @@ server_name: "localhost:8008"
 pid_file: /data/homeserver.pid
 public_baseurl: http://localhost:8008/
 listeners:
+  - port: 9000
+    bind_addresses: ["0.0.0.0"]
+    type: manhole
   - port: 8008
     tls: false
     type: http
@@ -36,8 +39,12 @@ suppress_key_server_warning: true
 trusted_key_servers:
   - server_name: "matrix.org"
 
+enable_registration: false
 password_config:
-  localdb_enabled: false
+  localdb_enabled: true
+
+auto_join_rooms:
+  - "#supporter:localhost:8008"
 
 oidc_providers:
   - idp_id: 01HBH8G2N6ZS3AF3C95ZQT4M2T

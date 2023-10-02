@@ -1,24 +1,20 @@
-import {MatrixContext} from "@/contexts/MatrixContext";
-import {useGetSSOUrl} from "@/hooks/useGetSSOUrl";
-import {useSession} from "@/hooks/useSession";
-import {useContext, useEffect} from "react";
+import {useUser} from "@/hooks/useUser";
+import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 export function LoginPage() {
-  const {client} = useContext(MatrixContext);
-  const {ssoUrl} = useGetSSOUrl(client);
-  const sessionService = useSession();
+  const user = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (sessionStorage.getItem("token")) {
+    if (user.isLoggedIn()) {
       navigate("/protected");
+      return;
     }
-    sessionService.init();
-    if (ssoUrl) {
+    user.getSsoUrl().then((ssoUrl) => {
       window.location.href = ssoUrl;
-    }
-  }, [ssoUrl, sessionService, navigate]);
+    });
+  }, [navigate, user]);
 
   return <div>Redirecting to SSO...</div>;
 }
