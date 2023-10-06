@@ -15,16 +15,16 @@ export function TicketListItem({ticket}: {ticket: Ticket}) {
       onClick={() => navigate("/details-ticket?ticketId=" + ticket.id)}
     >
       <td className="w-full max-w-xs px-1 py-3 xl:max-w-lg">
-        {ticket.room.name}
+        {ticket.room?.name}
       </td>
       <td className="hidden flex-1 truncate px-1 py-3 md:block">
         {ticket.created_by}
       </td>
       <td className="hidden flex-1 truncate px-1 py-3 md:block">
-        {createEvent.getDate().toLocaleString()}
+        {createEvent?.getDate().toLocaleString()}
       </td>
       <td className="hidden flex-1 truncate px-1 py-3 md:block">
-        {lastEvent.getDate().toLocaleString()}
+        {lastEvent?.getDate().toLocaleString()}
       </td>
       <td className="hidden flex-1 truncate px-1 py-3 md:block">
         {ticket.assignee}

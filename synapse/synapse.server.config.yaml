@@ -44,7 +44,7 @@ password_config:
   localdb_enabled: true
 
 auto_join_rooms:
-  - "#supporter:localhost:8008"
+  - "#support:localhost:8008"
 
 rc_message:
   per_second: 1000

@@ -1,6 +1,6 @@
+import {MatrixClientContext} from "@/contexts/MatrixClientContext";
 import {createTicket} from "@/helpers/ticket/createTicket";
-import {useSyncedClient} from "@/hooks/useSyncedClient";
-import {ChangeEventHandler, useState} from "react";
+import {ChangeEventHandler, useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 export function CreateTicketPage() {
@@ -12,7 +12,8 @@ export function CreateTicketPage() {
     title: "",
     description: "",
   });
-  const client = useSyncedClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {client} = useContext(MatrixClientContext);
   const navigate = useNavigate();
 
   // @TODO: Use validation library like yup.
@@ -43,7 +44,8 @@ export function CreateTicketPage() {
   const createTicketAndClearForm = async () => {
     validate("title", ticketFormState.title);
     validate("description", ticketFormState.description);
-    if (ticketFormState.title && ticketFormState.description) {
+    if (ticketFormState.title && ticketFormState.description && !isSubmitting) {
+      setIsSubmitting(true);
       createTicket(
         client,
         ticketFormState.title,
@@ -116,6 +118,7 @@ export function CreateTicketPage() {
           Abbrechen
         </button>
         <button
+          disabled={isSubmitting}
           title="Ticket erstellen"
           className="rounded-md border bg-blue-50 px-3 py-2 leading-none hover:bg-blue-100"
           onClick={() => createTicketAndClearForm()}

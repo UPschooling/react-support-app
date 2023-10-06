@@ -1,9 +1,10 @@
 import {TicketListItem} from "@/components/TicketListItem";
-import {useLoggedInClient} from "@/hooks/useLoggedInClient";
+import {MatrixClientContext} from "@/contexts/MatrixClientContext";
+import {useContext} from "react";
 import {useNavigate} from "react-router-dom";
 
 export function ProtectedPage() {
-  const {tickets, profileInfo, isLoading} = useLoggedInClient();
+  const {tickets, profileInfo, isLoading} = useContext(MatrixClientContext);
   const navigate = useNavigate();
 
   if (isLoading) {

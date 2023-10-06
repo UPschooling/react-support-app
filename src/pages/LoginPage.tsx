@@ -1,15 +1,11 @@
+import {MatrixClientContext} from "@/contexts/MatrixClientContext";
 import {getSsoUrl} from "@/helpers/getSsoUrl";
-import {useSyncedClient} from "@/hooks/useSyncedClient";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 export function LoginPage() {
-  const client = useSyncedClient();
+  const {client} = useContext(MatrixClientContext);
   const navigate = useNavigate();
-
-  if (sessionStorage.getItem("token")) {
-    navigate("/protected");
-  }
 
   useEffect(() => {
     getSsoUrl(client).then((ssoUrl) => {

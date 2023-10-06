@@ -1,21 +1,12 @@
-import {useSyncedClient} from "@/hooks/useSyncedClient";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {MatrixClientContext} from "@/contexts/MatrixClientContext";
+import {useContext, useState} from "react";
 
 export function PasswordLoginPage() {
   const [formState, setFormState] = useState({
     username: "",
     password: "",
   });
-  const navigate = useNavigate();
-  const client = useSyncedClient();
-
-  useEffect(() => {
-    if (client.isLoggedIn()) {
-      navigate("/protected");
-      return;
-    }
-  }, [client, navigate]);
+  const {client} = useContext(MatrixClientContext);
 
   return (
     <div className="sm:max-w-md">
@@ -70,9 +61,7 @@ export function PasswordLoginPage() {
               .loginWithPassword(formState.username, formState.password)
               .then((response) => {
                 sessionStorage.setItem("token", JSON.stringify(response));
-              })
-              .then(() => {
-                navigate("/protected");
+                window.location.href = "/";
               })
           }
         >

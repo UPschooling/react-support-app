@@ -31,7 +31,7 @@ export async function createTicket(
       join_rule: "restricted",
     })
     .then(() =>
-      Promise.all(
+      Promise.any(
         client
           .getRoom(getConfig("supporterSpace"))
           ?.getJoinedMembers()

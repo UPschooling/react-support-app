@@ -1,7 +1,7 @@
+import {MatrixClientContext} from "@/contexts/MatrixClientContext";
 import {assignTicket} from "@/helpers/ticket/assignTicket";
 import {setTicketStatus} from "@/helpers/ticket/setTicketStatus";
-import {useLoggedInClient} from "@/hooks/useLoggedInClient";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 
 export function TicketDetailsPage() {
@@ -9,11 +9,7 @@ export function TicketDetailsPage() {
   const [messageFormState, setMessageFormState] = useState("");
   const navigate = useNavigate();
 
-  const {client, tickets, isLoading} = useLoggedInClient();
-
-  if (!client.isLoggedIn()) {
-    navigate("/");
-  }
+  const {client, tickets, isLoading} = useContext(MatrixClientContext);
 
   const ticket = tickets.find(
     (ticket) => ticket.id === searchParams.get("ticketId"),

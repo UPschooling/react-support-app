@@ -1,25 +1,32 @@
-import {StrictMode} from "react";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {LoginPage} from "./pages/LoginPage";
-import {ProtectedPage} from "./pages/ProtectedPage";
-import {CallbackPage} from "./pages/CallbackPage";
-import {PasswordLoginPage} from "./pages/PasswordLoginPage";
-import {CreateTicketPage} from "./pages/CreateTicketPage";
-import {TicketDetailsPage} from "./pages/TicketDetailsPage";
+import {BrowserRouter} from "react-router-dom";
+import {ProtectedRoutes} from "./routes/ProtectedRoutes";
+import {createClient} from "matrix-js-sdk";
+import {getConfig} from "./config/getConfig";
+import {PublicRoutes} from "./routes/PublicRoutes";
 
 export function App() {
-  return (
-    <StrictMode>
+  const token = JSON.parse(sessionStorage.getItem("token"));
+
+  if (token) {
+    const client = createClient({
+      accessToken: token?.access_token,
+      userId: token?.user_id,
+      deviceId: token?.device_id,
+      baseUrl: getConfig("synapse"),
+    });
+    return (
       <BrowserRouter>
-        <Routes>
-          <Route path="/" Component={LoginPage} />
-          <Route path="/callback" Component={CallbackPage} />
-          <Route path="/protected" Component={ProtectedPage} />
-          <Route path="/password" Component={PasswordLoginPage} />
-          <Route path="/create-ticket" Component={CreateTicketPage} />
-          <Route path="/details-ticket" Component={TicketDetailsPage} />
-        </Routes>
+        <ProtectedRoutes client={client} />
       </BrowserRouter>
-    </StrictMode>
-  );
+    );
+  } else {
+    const client = createClient({
+      baseUrl: getConfig("synapse"),
+    });
+    return (
+      <BrowserRouter>
+        <PublicRoutes client={client} />
+      </BrowserRouter>
+    );
+  }
 }
