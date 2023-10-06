@@ -6,32 +6,36 @@ import {useNavigate} from "react-router-dom";
 
 export function ProtectedPage() {
   const [userIsLoading, setUserIsLoading] = useState(true);
-  const user = useUser();
-  const ticketService = useTickets();
+  const {syncUser, getUserId, profileInfo} = useUser();
+  const {syncTickets, startEventListening, createTicket, tickets} =
+    useTickets();
   const [ticketFormState, setTicketFormState] = useState({
     title: "",
   });
   const navigate = useNavigate();
 
+  if (!sessionStorage.getItem("token")) {
+    navigate("/");
+  }
+
   useEffect(() => {
-    if (!sessionStorage.getItem("token")) {
-      navigate("/");
-    }
-    ticketService.syncTickets(user.getUserId());
-    user.syncUser().then(() => setUserIsLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    startEventListening(getUserId());
+    syncUser().then(() => {
+      setUserIsLoading(false);
+      syncTickets();
+    });
+  }, [getUserId, startEventListening, syncTickets, syncUser]);
 
   if (userIsLoading) return <div>Loading...</div>;
 
   const createTicketAndClearForm = async () => {
-    ticketService.createTicket(ticketFormState.title);
+    createTicket(ticketFormState.title);
     setTicketFormState({title: ""});
   };
 
   return (
     <div>
-      Hallo {user.profileInfo.displayname}
+      Hallo {profileInfo.displayname}
       <br />
       <input
         className="border"
@@ -50,7 +54,7 @@ export function ProtectedPage() {
       <br />
       Tickets:
       <ul>
-        {ticketService.tickets.map((ticket) => (
+        {tickets.map((ticket) => (
           <li key={ticket.roomId}>
             <TicketListItem ticket={ticket} />
           </li>
