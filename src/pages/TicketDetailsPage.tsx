@@ -1,105 +1,58 @@
-import {MatrixClientContext} from "@/contexts/MatrixClientContext";
-import {useTickets} from "@/hooks/useTickets";
-import {useUser} from "@/hooks/useUser";
-import {EmittedEvents, MatrixEvent} from "matrix-js-sdk";
-import {useContext, useEffect, useState} from "react";
+import {assignTicket} from "@/helpers/ticket/assignTicket";
+import {setTicketStatus} from "@/helpers/ticket/setTicketStatus";
+import {useLoggedInClient} from "@/hooks/useLoggedInClient";
+import {useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 
 export function TicketDetailsPage() {
   const [searchParams] = useSearchParams();
-  const {syncUser, getUserId, getAllUsers} = useUser();
-  const {
-    getTicket,
-    getTicketDescription,
-    getTicketStatus,
-    getTicketAssignee,
-    syncTickets,
-    startEventListening,
-    assignTicket,
-    setTicketStatus,
-    sendMessage,
-    getMessages,
-  } = useTickets();
-  const ticket = getTicket(searchParams.get("ticketId") as string);
-  const navigate = useNavigate();
-  const [messages, setMessages] = useState<MatrixEvent[]>([]);
-  const {client} = useContext(MatrixClientContext);
   const [messageFormState, setMessageFormState] = useState("");
+  const navigate = useNavigate();
 
-  if (!sessionStorage.getItem("token")) {
+  const {client, tickets, isLoading} = useLoggedInClient();
+
+  if (!client.isLoggedIn()) {
     navigate("/");
   }
 
-  useEffect(() => {
-    client.on("Room.timeline" as EmittedEvents, (event: MatrixEvent) => {
-      if (
-        event.getType() === "m.room.message" &&
-        event.getRoomId() === searchParams.get("ticketId")
-      ) {
-        setMessages((prevState) => {
-          if (
-            prevState.find((message) => message.getId() === event.getId()) ===
-            undefined
-          ) {
-            return [...prevState, event];
-          } else {
-            return prevState;
-          }
-        });
-      }
-    });
-    startEventListening(getUserId());
-    syncUser();
-  }, [
-    client,
-    getMessages,
-    getUserId,
-    messages,
-    searchParams,
-    startEventListening,
-    syncTickets,
-    syncUser,
-  ]);
+  const ticket = tickets.find(
+    (ticket) => ticket.id === searchParams.get("ticketId"),
+  );
 
-  if (!ticket) {
+  if (isLoading || !ticket) {
     return <div>Loading...</div>;
   }
 
-  const assignee = getTicketAssignee(ticket.roomId);
-  const status = getTicketStatus(ticket.roomId);
+  const sendMessage = (ticketId: string, message: string) =>
+    client.sendEvent(ticketId, "m.room.message", {
+      msgtype: "m.text",
+      body: message,
+    });
 
   return (
     <div className="flex min-h-screen flex-col">
       <div className="w-full flex-1 divide-y p-8">
         <div className="flex flex-col p-8 md:flex-row">
           <div className="w-1/6 font-semibold">Titel</div>
-          <div className="w-4/6">{ticket.name}</div>
+          <div className="w-4/6">{ticket.room.name}</div>
         </div>
         <div className="flex flex-col p-8 md:flex-row">
           <div className="w-1/6 font-semibold">Beschreibung</div>
-          <div className="w-4/6">{getTicketDescription(ticket.roomId)}</div>
+          <div className="w-4/6">{ticket.description}</div>
         </div>
         <div className="flex flex-col p-8 md:flex-row">
           <div className="w-1/6 font-semibold">Status</div>
           <div className="w-4/6">
             <select
-              onChange={(e) => setTicketStatus(ticket.roomId, e.target.value)}
+              className="p-2"
+              onChange={(e) =>
+                setTicketStatus(client, ticket.room.roomId, e.target.value)
+              }
+              value={ticket.status}
             >
-              <option value="offen" selected={status === "offen"}>
-                offen
-              </option>
-              <option
-                value="in Bearbeitung"
-                selected={status === "in Bearbeitung"}
-              >
-                in Bearbeitung
-              </option>
-              <option
-                value="abgeschlossen"
-                selected={status === "abgeschlossen"}
-              >
-                abgeschlossen
-              </option>
+              <option value="offen">offen</option>
+              <option value="in Bearbeitung">in Bearbeitung</option>
+              <option value="abgeschlossen">abgeschlossen</option>
             </select>
           </div>
         </div>
@@ -107,17 +60,15 @@ export function TicketDetailsPage() {
           <div className="w-1/6 font-semibold">Zuständig</div>
           <div className="w-4/6">
             <select
-              onChange={(e) => assignTicket(ticket.roomId, e.target.value)}
+              className="p-2"
+              onChange={(e) =>
+                assignTicket(client, ticket.room.roomId, e.target.value)
+              }
+              value={ticket.assignee}
             >
-              <option value="" selected={assignee === "Keiner"}>
-                Keiner
-              </option>
-              {getAllUsers().map((user) => (
-                <option
-                  value={user.userId}
-                  selected={user.userId === assignee}
-                  key={user.userId}
-                >
+              <option value="">Keiner</option>
+              {client.getUsers().map((user) => (
+                <option value={user.userId} key={user.userId}>
                   {user.displayName}
                 </option>
               ))}
@@ -126,23 +77,27 @@ export function TicketDetailsPage() {
         </div>
       </div>
       <div className="m-4 h-64 grow overflow-y-scroll border">
-        {messages.map((message) => (
+        {ticket.messages.map((message) => (
           <div
-            key={message.getId()}
+            key={message.id}
             className={
-              message.getSender() === getUserId()
+              message.sender_id === client.getUserId()
                 ? "chat chat-end"
                 : "chat chat-start"
             }
           >
             <div
               className={`chat-bubble ${
-                message.getSender() === getUserId()
+                message.sender_id === client.getUserId()
                   ? "chat-bubble-info"
                   : "chat-bubble-warning"
               }`}
             >
-              {message.getContent().body}
+              <p className="text-sm font-bold">
+                {message.sender_displayname} am{" "}
+                {message.created_at.toLocaleString()}
+              </p>
+              {message.message}
             </div>
           </div>
         ))}
@@ -150,7 +105,7 @@ export function TicketDetailsPage() {
       <div className="m-4 -mt-4 flex-1 flex-row">
         <input
           type="text"
-          className="w-[80%] border p-2 md:w-[90%]"
+          className="w-[80%] border bg-gray-200 p-2 text-gray-700 focus:bg-white focus:outline-none md:w-[90%]"
           value={messageFormState}
           onChange={(e) => setMessageFormState(e.target.value)}
         />
@@ -158,7 +113,7 @@ export function TicketDetailsPage() {
           className="w-[20%] border p-2 md:w-[10%]"
           onClick={() => {
             if (messageFormState) {
-              sendMessage(ticket.roomId, messageFormState);
+              sendMessage(ticket.room.roomId, messageFormState);
               setMessageFormState("");
             }
           }}

@@ -1,4 +1,5 @@
-import {useTickets} from "@/hooks/useTickets";
+import {createTicket} from "@/helpers/ticket/createTicket";
+import {useSyncedClient} from "@/hooks/useSyncedClient";
 import {ChangeEventHandler, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -11,6 +12,7 @@ export function CreateTicketPage() {
     title: "",
     description: "",
   });
+  const client = useSyncedClient();
   const navigate = useNavigate();
 
   // @TODO: Use validation library like yup.
@@ -38,19 +40,22 @@ export function CreateTicketPage() {
     validate(e.target.id as "title" | "description", e.target.value);
   };
 
-  const {createTicket} = useTickets();
-
   const createTicketAndClearForm = async () => {
     validate("title", ticketFormState.title);
     validate("description", ticketFormState.description);
     if (ticketFormState.title && ticketFormState.description) {
-      createTicket(ticketFormState.title, ticketFormState.description);
-      setTicketFormState({title: "", description: ""});
-      navigate("/protected");
+      createTicket(
+        client,
+        ticketFormState.title,
+        ticketFormState.description,
+      ).then(() => {
+        setTicketFormState({title: "", description: ""});
+        navigate("/protected");
+      });
     }
   };
 
-  if (!sessionStorage.getItem("token")) {
+  if (!client.isLoggedIn()) {
     navigate("/");
   }
 

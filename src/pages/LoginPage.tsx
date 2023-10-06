@@ -1,20 +1,21 @@
-import {useUser} from "@/hooks/useUser";
+import {getSsoUrl} from "@/helpers/getSsoUrl";
+import {useSyncedClient} from "@/hooks/useSyncedClient";
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 export function LoginPage() {
-  const user = useUser();
+  const client = useSyncedClient();
   const navigate = useNavigate();
 
+  if (sessionStorage.getItem("token")) {
+    navigate("/protected");
+  }
+
   useEffect(() => {
-    if (user.isLoggedIn()) {
-      navigate("/protected");
-      return;
-    }
-    user.getSsoUrl().then((ssoUrl) => {
+    getSsoUrl(client).then((ssoUrl) => {
       window.location.href = ssoUrl;
     });
-  }, [navigate, user]);
+  }, [navigate, client]);
 
   return <div>Redirecting to SSO...</div>;
 }

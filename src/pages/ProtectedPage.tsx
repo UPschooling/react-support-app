@@ -1,38 +1,21 @@
 import {TicketListItem} from "@/components/TicketListItem";
-import {useTickets} from "@/hooks/useTickets";
-import {useUser} from "@/hooks/useUser";
-import {useEffect, useState} from "react";
+import {useLoggedInClient} from "@/hooks/useLoggedInClient";
 import {useNavigate} from "react-router-dom";
 
 export function ProtectedPage() {
-  const [userIsLoading, setUserIsLoading] = useState(true);
-  const {syncUser, getUserId, profileInfo} = useUser();
-  const {syncTickets, startEventListening, tickets, getTicketStatus} =
-    useTickets();
+  const {tickets, profileInfo, isLoading} = useLoggedInClient();
   const navigate = useNavigate();
 
-  if (!sessionStorage.getItem("token")) {
-    navigate("/");
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  useEffect(() => {
-    startEventListening(getUserId());
-    syncUser().then(() => {
-      setUserIsLoading(false);
-      syncTickets();
-    });
-  }, [getUserId, startEventListening, syncTickets, syncUser]);
-
-  if (userIsLoading) return <div>Loading...</div>;
-
-  const openTickets = tickets.filter(
-    (ticket) =>
-      getTicketStatus(ticket.roomId) === "offen" ||
-      getTicketStatus(ticket.roomId) === "in Bearbeitung",
+  const openTickets = tickets.filter((ticket) => ticket.status === "offen");
+  const inProgressTickets = tickets.filter(
+    (ticket) => ticket.status === "in Bearbeitung",
   );
-
   const closedTickets = tickets.filter(
-    (ticket) => getTicketStatus(ticket.roomId) === "abgeschlossen",
+    (ticket) => ticket.status === "abgeschlossen",
   );
 
   return (
@@ -85,7 +68,17 @@ export function ProtectedPage() {
             </th>
           </tr>
           {openTickets.map((ticket) => (
-            <TicketListItem ticket={ticket} key={ticket.roomId} />
+            <TicketListItem ticket={ticket} key={ticket.id} />
+          ))}
+          <tr className="flex border-b">
+            <th className="flex-1 bg-gray-100 px-3 py-2 text-left" colSpan={5}>
+              <h2 className="text-sm">
+                {inProgressTickets.length} Tickets in Bearbeitung
+              </h2>
+            </th>
+          </tr>
+          {inProgressTickets.map((ticket) => (
+            <TicketListItem ticket={ticket} key={ticket.id} />
           ))}
           <tr className="flex border-b">
             <th className="flex-1 bg-gray-100 px-3 py-2 text-left" colSpan={5}>
@@ -95,7 +88,7 @@ export function ProtectedPage() {
             </th>
           </tr>
           {closedTickets.map((ticket) => (
-            <TicketListItem ticket={ticket} key={ticket.roomId} />
+            <TicketListItem ticket={ticket} key={ticket.id} />
           ))}
         </tbody>
       </table>
