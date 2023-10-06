@@ -42,6 +42,7 @@
     "@vitejs/plugin-react-swc": "^3.3.2",
     "@vitest/ui": "^0.34.5",
     "autoprefixer": "^10.4.16",
+    "daisyui": "^3.9.2",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

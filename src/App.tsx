@@ -10,6 +10,8 @@ import {
   MatrixClientContextType,
 } from "./contexts/MatrixClientContext";
 import {PasswordLoginPage} from "./pages/PasswordLoginPage";
+import {CreateTicketPage} from "./pages/CreateTicketPage";
+import {TicketDetailsPage} from "./pages/TicketDetailsPage";
 
 export function App() {
   const matrixClient = useMemo(
@@ -30,6 +32,8 @@ export function App() {
             <Route path="/callback" Component={CallbackPage} />
             <Route path="/protected" Component={ProtectedPage} />
             <Route path="/password" Component={PasswordLoginPage} />
+            <Route path="/create-ticket" Component={CreateTicketPage} />
+            <Route path="/details-ticket" Component={TicketDetailsPage} />
           </Routes>
         </BrowserRouter>
       </MatrixClientContext.Provider>

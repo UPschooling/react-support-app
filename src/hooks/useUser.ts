@@ -94,6 +94,17 @@ export function useUser() {
     return client.getUserId();
   }, [client]);
 
+  const getUser = useCallback(
+    (userId: string) => {
+      return client.getUser(userId);
+    },
+    [client],
+  );
+
+  const getAllUsers = useCallback(() => {
+    return client.getUsers();
+  }, [client]);
+
   return {
     profileInfo,
     syncUser,
@@ -103,5 +114,7 @@ export function useUser() {
     login,
     loginWithPassword,
     getUserId,
+    getUser,
+    getAllUsers,
   };
 }

@@ -9,5 +9,13 @@
     "node_modules/": true,
     "pnpm-lock.yaml": true,
     "LICENSE": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "javascript": "javascript",
+    "css": "css"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
   }
 }

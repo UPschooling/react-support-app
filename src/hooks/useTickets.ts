@@ -37,7 +37,7 @@ export function useTickets() {
   );
 
   const createTicket = useCallback(
-    async (title: string) => {
+    async (title: string, description: string) => {
       const createdRoom = await client.createRoom({
         name: title,
         visibility: Visibility.Private,
@@ -72,6 +72,12 @@ export function useTickets() {
           ),
 
         client.sendEvent(createdRoom.room_id, "ticket.create", {}),
+        client.sendEvent(createdRoom.room_id, "ticket.description", {
+          description,
+        }),
+        client.sendEvent(createdRoom.room_id, "ticket.status", {
+          status: "offen",
+        }),
       ]).finally(() =>
         setTickets([...tickets, client.getRoom(createdRoom.room_id)]),
       );
@@ -118,12 +124,58 @@ export function useTickets() {
     [getTicket],
   );
 
+  const getTicketStatus = useCallback(
+    (ticketId: string) =>
+      getTicket(ticketId)
+        .getLiveTimeline()
+        .getEvents()
+        .findLast((event) => event.getType() === "ticket.status")
+        ?.getContent().status,
+    [getTicket],
+  );
+
+  const getTicketDescription = useCallback(
+    (ticketId: string) =>
+      getTicket(ticketId)
+        .getLiveTimeline()
+        .getEvents()
+        .findLast((event) => event.getType() === "ticket.description")
+        ?.getContent().description,
+    [getTicket],
+  );
+
   const assignTicket = useCallback(
     (ticketId: string, assignee: string) =>
       client.sendEvent(ticketId, "ticket.assign", {
         assignee,
       }),
     [client],
+  );
+
+  const setTicketStatus = useCallback(
+    (ticketId: string, status: string) =>
+      client.sendEvent(ticketId, "ticket.status", {
+        status,
+      }),
+    [client],
+  );
+
+  const sendMessage = useCallback(
+    (ticketId: string, message: string) =>
+      client.sendEvent(ticketId, "m.room.message", {
+        msgtype: "m.text",
+        body: message,
+      }),
+    [client],
+  );
+
+  const getMessages = useCallback(
+    (ticketId: string) =>
+      getTicket(ticketId)
+        .getLiveTimeline()
+        .getEvents()
+        .filter((event) => event.getType() === "m.room.message"),
+    [getTicket],
   );
 
   return {
@@ -134,5 +186,10 @@ export function useTickets() {
     startEventListening,
     getTicketAssignee,
     assignTicket,
+    getTicketStatus,
+    getTicketDescription,
+    setTicketStatus,
+    sendMessage,
+    getMessages,
   };
 }
