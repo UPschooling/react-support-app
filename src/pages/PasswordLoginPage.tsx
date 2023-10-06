@@ -13,7 +13,7 @@ export function PasswordLoginPage() {
       <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
         Login
       </h1>
-      <form className="space-y-4 md:space-y-6" action="#">
+      <div className="space-y-4 md:space-y-6">
         <div>
           <label
             htmlFor="username"
@@ -67,7 +67,7 @@ export function PasswordLoginPage() {
         >
           Login
         </button>
-      </form>
+      </div>
     </div>
   );
 }
