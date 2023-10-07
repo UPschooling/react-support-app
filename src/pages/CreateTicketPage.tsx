@@ -72,7 +72,7 @@ export function CreateTicketPage() {
             Titel
           </label>
           <input
-            className={`mb-3 block w-full appearance-none rounded border bg-gray-200 px-4 py-3 leading-tight text-gray-700 focus:bg-white focus:outline-none ${
+            className={`mb-3 block w-full appearance-none rounded border px-4 py-3 leading-tight focus:outline-none ${
               errorState.title ? "border-red-500" : ""
             }`}
             id="title"
@@ -93,7 +93,7 @@ export function CreateTicketPage() {
             Beschreibung
           </label>
           <textarea
-            className={`mb-3 block w-full appearance-none rounded border bg-gray-200 px-4 py-3 leading-tight text-gray-700 focus:bg-white focus:outline-none ${
+            className={`mb-3 block w-full appearance-none rounded border px-4 py-3 leading-tight focus:outline-none ${
               errorState.description ? "border-red-500" : ""
             }`}
             id="description"
@@ -112,7 +112,7 @@ export function CreateTicketPage() {
       <div className="flex justify-between">
         <button
           title="Abbrechen"
-          className="rounded-md border bg-blue-50 px-3 py-2 leading-none hover:bg-blue-100"
+          className="rounded-md border bg-gray-900 leading-none hover:bg-gray-600"
           onClick={() => navigate("/protected")}
         >
           Abbrechen
@@ -120,7 +120,7 @@ export function CreateTicketPage() {
         <button
           disabled={isSubmitting}
           title="Ticket erstellen"
-          className="rounded-md border bg-blue-50 px-3 py-2 leading-none hover:bg-blue-100"
+          className="rounded-md border bg-gray-900 leading-none hover:bg-gray-600"
           onClick={() => createTicketAndClearForm()}
         >
           Ticket erstellen

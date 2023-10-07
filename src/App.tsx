@@ -15,7 +15,7 @@ export function App() {
       baseUrl: getConfig("synapse"),
     });
     return (
-      <BrowserRouter>
+      <BrowserRouter basename="/apps/upschoolingsupport">
         <ProtectedRoutes client={client} />
       </BrowserRouter>
     );
@@ -24,7 +24,7 @@ export function App() {
       baseUrl: getConfig("synapse"),
     });
     return (
-      <BrowserRouter>
+      <BrowserRouter basename="/apps/upschoolingsupport">
         <PublicRoutes client={client} />
       </BrowserRouter>
     );

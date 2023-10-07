@@ -48,6 +48,10 @@ export function useLoggedInClient(client: MatrixClient) {
                   ),
                 ),
               );
+            if (!client.getRoom(event.getRoomId())) {
+              // @TODO: Why is room null?
+              return prevState;
+            }
             return [
               ...prevState,
               {

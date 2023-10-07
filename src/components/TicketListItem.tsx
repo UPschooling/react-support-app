@@ -8,9 +8,9 @@ export function TicketListItem({ticket}: {ticket: Ticket}) {
   const navigate = useNavigate();
 
   return (
-    <tr
+    <button
       role="row"
-      className="group flex cursor-pointer border-b hover:bg-blue-100"
+      className="group flex cursor-pointer border-b hover:bg-blue-700"
       aria-controls="info-popup"
       onClick={() => navigate("/details-ticket?ticketId=" + ticket.id)}
     >
@@ -29,6 +29,6 @@ export function TicketListItem({ticket}: {ticket: Ticket}) {
       <td className="hidden flex-1 truncate px-1 py-3 md:block">
         {ticket.assignee}
       </td>
-    </tr>
+    </button>
   );
 }

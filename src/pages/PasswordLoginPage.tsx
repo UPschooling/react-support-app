@@ -55,13 +55,13 @@ export function PasswordLoginPage() {
           />{" "}
         </div>
         <button
-          className="rounded-md border bg-blue-50 px-3 py-2 leading-none hover:bg-blue-100"
+          className="rounded-md border bg-gray-900 px-3 py-2 leading-none hover:bg-gray-600"
           onClick={() =>
             client
               .loginWithPassword(formState.username, formState.password)
               .then((response) => {
                 sessionStorage.setItem("token", JSON.stringify(response));
-                window.location.href = "/";
+                window.location.href = `${window.location.origin}/apps/upschoolingsupport`;
               })
           }
         >

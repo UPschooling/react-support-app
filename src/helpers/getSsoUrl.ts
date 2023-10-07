@@ -22,7 +22,7 @@ export async function getSsoUrl(client: MatrixClient) {
   }
 
   return client.getSsoLoginUrl(
-    `${window.location.href}callback`,
+    `${window.location.href}/callback`,
     "sso",
     providerForThisInstance.id,
   );

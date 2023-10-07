@@ -17,7 +17,7 @@ export function CallbackPage() {
       })
       .then((response) => {
         sessionStorage.setItem("token", JSON.stringify(response));
-        window.location.href = "/";
+        window.location.href = `${window.location.origin}/apps/upschoolingsupport`;
       });
   }, [navigate, searchParams, client]);
 

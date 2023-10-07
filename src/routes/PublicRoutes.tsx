@@ -12,9 +12,9 @@ export function PublicRoutes({client}: {client: MatrixClient}) {
   return (
     <MatrixClientContext.Provider value={{client}}>
       <Routes>
-        <Route path="/*" Component={LoginPage} />
         <Route path="/callback" Component={CallbackPage} />
         <Route path="/password" Component={PasswordLoginPage} />
+        <Route path="/" Component={LoginPage} />
       </Routes>
     </MatrixClientContext.Provider>
   );

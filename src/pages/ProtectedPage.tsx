@@ -20,17 +20,17 @@ export function ProtectedPage() {
   );
 
   return (
-    <div className="h-screen">
-      <header className="flex items-center border-t bg-white px-4 py-1">
+    <div className="h-screen w-screen">
+      <header className="flex items-center border-t px-4 py-1">
         <div className="flex">
           <h2 id="content-caption" className="font-semibold">
-            {profileInfo?.displayname}
+            Hallo {profileInfo?.displayname} 👋
           </h2>
         </div>
         <div className="ml-auto">
           <button
             title="Neues Ticket erstellen"
-            className="rounded-md border bg-blue-50 px-3 py-2 leading-none hover:bg-blue-100"
+            className="rounded-md border bg-gray-900 px-3 py-2 leading-none hover:bg-gray-600"
             onClick={() => navigate("/create-ticket")}
           >
             Neues Ticket erstellen
@@ -64,17 +64,17 @@ export function ProtectedPage() {
         </thead>
         <tbody className="flex min-h-0 w-full flex-1 flex-col overflow-hidden px-4">
           <tr className="flex border-b">
-            <th className="flex-1 bg-gray-100 px-3 py-2 text-left" colSpan={5}>
-              <h2 className="text-sm">{openTickets.length} offene Tickets</h2>
+            <th className="flex-1 px-3 py-2 text-left font-bold" colSpan={5}>
+              <h2 className="text-sm">{openTickets.length} offene Tickets:</h2>
             </th>
           </tr>
           {openTickets.map((ticket) => (
             <TicketListItem ticket={ticket} key={ticket.id} />
           ))}
           <tr className="flex border-b">
-            <th className="flex-1 bg-gray-100 px-3 py-2 text-left" colSpan={5}>
+            <th className="flex-1 px-3 py-2 text-left font-bold" colSpan={5}>
               <h2 className="text-sm">
-                {inProgressTickets.length} Tickets in Bearbeitung
+                {inProgressTickets.length} Tickets in Bearbeitung:
               </h2>
             </th>
           </tr>
@@ -82,9 +82,9 @@ export function ProtectedPage() {
             <TicketListItem ticket={ticket} key={ticket.id} />
           ))}
           <tr className="flex border-b">
-            <th className="flex-1 bg-gray-100 px-3 py-2 text-left" colSpan={5}>
+            <th className="flex-1 px-3 py-2 text-left font-bold" colSpan={5}>
               <h2 className="text-sm">
-                {closedTickets.length} abgeschlossene Tickets
+                {closedTickets.length} abgeschlossene Tickets:
               </h2>
             </th>
           </tr>

@@ -21,11 +21,9 @@ export default defineConfig({
     rollupOptions: {
       plugins: [],
       output: {
-        entryFileNames: "js/main.js",
-        chunkFileNames: "css/style.css",
-        manualChunks: {
-          "index.html": ["templates/main.php"],
-        },
+        assetFileNames: `css/[name].[ext]`,
+        entryFileNames: "js/[name].js",
+        chunkFileNames: "js/[name].js",
       },
     },
   },

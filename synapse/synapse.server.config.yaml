@@ -96,3 +96,15 @@ oidc_providers:
       config:
         localpart_template: "{{ user.name }}"
         display_name_template: "{{ user.name }}"
+  - idp_id: 01HC53VERMM81YE5TH9DJZN7S4
+    idp_name: "http://nextcloud.local"
+    skip_verification: true
+    issuer: "http://nextcloud.local"
+    client_id: "VgSUqiTshGQ8oWszLaTVfBo0DDfaGUC6DDhPHIWum5nQlFlEMiXnoKVBLDLeCVKp"
+    client_secret: "N0ZlODQK0r5KgpQ77cVSqXfHbC6YGVzY1ig8H7fQ4qxiljEkQOIUbzRN1Fz9Ceyp"
+    client_auth_method: "client_secret_post"
+    scopes: ["openid", "email", "profile"]
+    user_mapping_provider:
+      config:
+        localpart_template: "{{ user.name }}"
+        display_name_template: "{{ user.name }}"

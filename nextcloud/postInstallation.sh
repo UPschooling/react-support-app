@@ -4,6 +4,7 @@ php occ log:manage --level=debug
 
 php occ app:install oidc
 php occ app:enable --force oidc
+php occ app:enable --force upschoolingsupport
 
 export OC_PASS=upschooling1234!
 php occ user:add --password-from-env --display-name="Demo User 1" --group="users" demouser1
@@ -37,3 +38,5 @@ INSERT INTO oc_oidc_redirect_uris (
     'http://localhost:8008/_synapse/client/oidc/callback'
 );
 EOF
+
+echo "Header set Content-Security-Policy \"default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';\"" >> /var/www/html/.htaccess

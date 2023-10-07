@@ -14,9 +14,10 @@ export function ProtectedRoutes({client}: {client: MatrixClient}) {
   return (
     <MatrixClientContext.Provider value={context}>
       <Routes>
-        <Route path="/*" Component={ProtectedPage} />
         <Route path="/create-ticket" Component={CreateTicketPage} />
         <Route path="/details-ticket" Component={TicketDetailsPage} />
+        <Route path="/protected" Component={ProtectedPage} />
+        <Route path="/" Component={ProtectedPage} />
       </Routes>
     </MatrixClientContext.Provider>
   );
