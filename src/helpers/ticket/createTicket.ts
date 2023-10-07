@@ -31,11 +31,15 @@ export async function createTicket(
       join_rule: "restricted",
     })
     .then(() =>
-      Promise.any(
+      Promise.all(
         client
           .getRoom(getConfig("supporterSpace"))
-          ?.getJoinedMembers()
-          .filter((member) => member.powerLevelNorm >= 50)
+          ?.getMembers()
+          .filter(
+            (member) =>
+              member.powerLevelNorm >= 50 &&
+              member.userId !== client.getUserId(),
+          )
           .map((member) => client.invite(createdRoom.room_id, member.userId)),
       ),
     )

@@ -16,9 +16,17 @@ export default defineConfig({
     },
   },
   build: {
-    target: "node18",
+    outDir: "nextcloud/upschoolingsupport",
+    target: "es2015",
     rollupOptions: {
       plugins: [],
+      output: {
+        entryFileNames: "js/main.js",
+        chunkFileNames: "css/style.css",
+        manualChunks: {
+          "index.html": ["templates/main.php"],
+        },
+      },
     },
   },
   test: {

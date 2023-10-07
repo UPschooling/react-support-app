@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <!--
+    SPDX-FileCopyrightText: Dennis Nikolay <dennisnikolay@posteo.de>
+    SPDX-License-Identifier: CC0-1.0
+    -->
+    <id>upschoolingsupport</id>
+    <name>U Pschooling Support</name>
+    <summary>UPschooling Support Plattform</summary>
+    <description><![CDATA[Ticketsystem für UPschooling Support]]></description>
+    <version>0.0.1</version>
+    <licence>agpl</licence>
+    <author mail="dennisnikolay@posteo.de" >Dennis Nikolay</author>
+    <namespace>UPschoolingSupport</namespace>
+    <category>social</category>
+    <bugs>https://github.com/UPschooling/react-support-app/issues</bugs>
+    <dependencies>
+        <nextcloud min-version="27" max-version="27"/>
+    </dependencies>
+    <navigations>
+        <navigation>
+            <name>U Pschooling Support</name>
+            <route>upschoolingsupport.page.index</route>
+        </navigation>
+    </navigations>
+</info>
