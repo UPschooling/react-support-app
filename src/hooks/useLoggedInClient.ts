@@ -37,27 +37,13 @@ export function useLoggedInClient(client: MatrixClient) {
             prevState.find((ticket) => ticket.id === event.getRoomId()) ===
             undefined
           ) {
-            client
-              .getProfileInfo(event.getSender())
-              .then((response) =>
-                setTickets((prevState) =>
-                  prevState.map((ticket) =>
-                    ticket.id === event.getRoomId()
-                      ? {...ticket, created_by: response.displayname}
-                      : ticket,
-                  ),
-                ),
-              );
-            if (!client.getRoom(event.getRoomId())) {
-              // @TODO: Why is room null?
-              return prevState;
-            }
             return [
               ...prevState,
               {
                 room: client.getRoom(event.getRoomId()),
                 id: event.getRoomId(),
                 messages: [],
+                created_by: event.getSender(),
               },
             ];
           } else {
@@ -70,7 +56,7 @@ export function useLoggedInClient(client: MatrixClient) {
         setTickets((prevState) => {
           return prevState.map((ticket) => {
             if (ticket.id === event.getRoomId()) {
-              ticket.status = event.getContent().status;
+              return {...ticket, status: event.getContent().status};
             }
             return ticket;
           });
@@ -81,8 +67,7 @@ export function useLoggedInClient(client: MatrixClient) {
         setTickets((prevState) => {
           return prevState.map((ticket) => {
             if (ticket.id === event.getRoomId()) {
-              console.log(event);
-              ticket.assignee = event.getContent().assignee;
+              return {...ticket, assignee: event.getContent().assignee};
             }
             return ticket;
           });
@@ -90,25 +75,6 @@ export function useLoggedInClient(client: MatrixClient) {
         break;
 
       case "m.room.message":
-        client.getProfileInfo(event.getSender()).then((response) =>
-          setTickets((prevState) =>
-            prevState.map((ticket) =>
-              ticket.id === event.getRoomId()
-                ? {
-                    ...ticket,
-                    messages: ticket.messages.map((message) =>
-                      message.id === event.getId()
-                        ? {
-                            ...message,
-                            sender_displayname: response.displayname,
-                          }
-                        : message,
-                    ),
-                  }
-                : ticket,
-            ),
-          ),
-        );
         setTickets((prevState) => {
           return prevState.map((ticket) => {
             if (ticket.id === event.getRoomId()) {
@@ -122,6 +88,7 @@ export function useLoggedInClient(client: MatrixClient) {
                   sender_id: event.getSender(),
                   message: event.getContent().body,
                   created_at: event.getDate(),
+                  sender_displayname: event.getSender(),
                 });
               }
             }
@@ -156,7 +123,22 @@ export function useLoggedInClient(client: MatrixClient) {
   });
 
   useEffect(() => {
-    client.startClient();
+    client.clearStores().then(() => {
+      client
+        .startClient({
+          includeArchivedRooms: true,
+          lazyLoadMembers: false,
+          initialSyncLimit: 100000,
+        })
+        .then(() => {
+          setTickets((prevState) =>
+            prevState.map((ticket) => ({
+              ...ticket,
+              room: client.getRoom(ticket.id),
+            })),
+          );
+        });
+    });
   }, [client]);
 
   return {
